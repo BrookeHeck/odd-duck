@@ -54,8 +54,9 @@ let productInfoArr = [
   ['nameFour', 'https://place-hold.it/300x375/ddd" alt="placeHolder'],
   ['nameFive', 'https://place-hold.it/300x375/ddd" alt="placeHolder']
 ];
-
 let productObjArr = [];
+
+
 function createObjects() {
   for (let i = 0; i < productInfoArr.length; i++) {
     let newProd = new Product(productInfoArr[i][0], productInfoArr[i][1]);
@@ -79,10 +80,22 @@ function viewResults() {
 }
 
 function displayProducts() {
-  let indexArray = [];
+  let indexArray = [-1, -1, -1];
   let index = -1;
   for(let i = 0; i < 3; i++) {
-    index = Math.floor(Math.random() * productObjArr.length);
+    let alreadyUsed = true;
+    while (alreadyUsed) {
+      index = Math.floor(Math.random() * productObjArr.length);
+      for(let j of indexArray) {
+        if (j === index) {
+          alreadyUsed = true;
+          break;
+        } else {
+          alreadyUsed = false;
+        }
+      }
+    }
+    indexArray[i] = index;
     voteContainer.appendChild(productObjArr[index].createProductDisplay());
   }
 }
