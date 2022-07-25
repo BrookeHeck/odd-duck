@@ -49,6 +49,7 @@ class Product {
       
     let img = document.createElement('img');
     img.src = this.productPath;
+    img.alt = this.productName;
     voteDiv.appendChild(img);
   
     this.displayCounter++;
@@ -58,12 +59,18 @@ class Product {
 
 // Function will execute when user votes for a product, vote will be logged and three more products will be displayed
 function handleVote(event) {
-  console.log('click');
-  event.clickCounter++;
+  let clickedImg = event.target.alt;
+  console.log(clickedImg);
+  for(let product of productObjArr) {
+    if(clickedImg === product.productName) {
+      product.clickCounter++;
+    }
+  }
   if(voteCounter < votesAllowed) {
     voteContainer.innerHTML = "";
     displayProducts();
     voteCounter++;
+    console.log()
   } else {
     voteContainer.removeEventListener('click', handleVote);
     let viewButton = document.createElement('button');
