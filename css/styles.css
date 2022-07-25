@@ -13,8 +13,9 @@ header {
   width: 100%;
   align-items: center;
   margin-top: 1rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
+
 h1 {
   font-size: 1.5em;
   margin-left: 1rem;
@@ -31,6 +32,7 @@ main {
   align-items: center;
   justify-content: space-evenly;
   margin: auto 0;
+  font-size: 1.3rem;
 }
 
 #voteContainer > div {
@@ -39,7 +41,26 @@ main {
   align-items: center;
   justify-content: space-evenly;
   margin: auto 0;
-  height: 450px;
+  height: 500px;
+}
+
+#voteContainer h2, #voteContainer img {
+  margin: .5rem;
+}
+
+#voteContainer button {
+  font-size: 1.4rem;
+  color: white;
+  background-color: darkgray;
+  border: transparent;
+  border-radius: 5px;
+  padding: .5rem;
+  margin: .5rem;
+}
+
+button:hover {
+  transform: scale(1.1, 1.1);
+  cursor: pointer;
 }
 
 #voteContainer ul {
