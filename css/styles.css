@@ -1,7 +1,29 @@
 body {
-  width: 900px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  margin: auto 0;
 }
 
-#gridContainer {
-  display: grid;
+main {
+  width: 100%;
+}
+
+#voteContainer {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+  margin: auto 0;
+}
+
+#voteContainer > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  margin: auto 0;
+  height: 450px;
 }

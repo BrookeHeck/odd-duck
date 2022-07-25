@@ -47,7 +47,7 @@ function viewResults() {
 }
 
 let voteCounter = 0;
-let gridContainer = document.querySelector('#gridContainer');
+let gridContainer = document.querySelector('#voteContainer');
 
 function createProductDisplay() {
   let gridDiv = document.createElement('div');
