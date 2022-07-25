@@ -62,7 +62,7 @@ main {
   margin: .5rem;
 }
 
-#voteContainer button {
+button {
   font-size: 1.4rem;
   color: white;
   background-color: darkgray;

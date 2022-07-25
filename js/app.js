@@ -2,7 +2,7 @@
 
 // Global Variables
 let voteCounter = 0;
-let votesAllowed = 10;
+let votesAllowed = 25;
 let voteContainer = document.querySelector('#voteContainer');
 let productInfoArr = [
   ['Bag', 'img/bag.jpg'],
@@ -65,8 +65,12 @@ function handleVote(event) {
     displayProducts();
     voteCounter++;
   } else {
-    voteContainer.innerHTML = "";
-    viewResults();
+    voteContainer.removeEventListener('click', handleVote);
+    let viewButton = document.createElement('button');
+    viewButton.innerHTML = 'View Results';
+    let main = document.querySelector('main');
+    main.appendChild(viewButton);
+    viewButton.addEventListener('click', viewResults)
   }
 }
 
@@ -82,6 +86,7 @@ createObjects();
 
 // This function will take the number of times each product is displayed and voted for and then display it as a list
 function viewResults() {
+  voteContainer.innerHTML = "";
   let resultsDiv = document.createElement('ul');
   for (let productObj of productObjArr) {
     let header = document.createElement('li');
