@@ -1,5 +1,32 @@
 'use strict';
 
+// Global Variables
+let voteCounter = 0;
+let votesAllowed = 10;
+let voteContainer = document.querySelector('#voteContainer');
+let productInfoArr = [
+  ['Bag', 'img/bag.jpg'],
+  ['Banana', 'img/banana.jpg'],
+  ['Bathroom', 'img/bathroom.jpg'],
+  ['Boots', 'img/boots.jpg'],
+  ['Breakfast', 'img/breakfast.jpg'],
+  ['Bubblegum', 'img/bubblegum.jpg'],
+  ['Chair', 'img/chair.jpg'],
+  ['Cthulhu', 'img/cthulhu.jpg'],
+  ['Dog Duck', 'img/dog-duck.jpg'],
+  ['Dragon', 'img/dragon.jpg'],
+  ['Pen', 'img/pen.jpg'],
+  ['Pet Sweep', 'img/pet-sweep.jpg'],
+  ['Scissors', 'img/scissors.jpg'],
+  ['Shark', 'img/shark.jpg'],
+  ['Sweep', 'img/sweep.png'],
+  ['Tauntuan', 'img/tauntaun.jpg'],
+  ['Unicorn', 'img/unicorn.jpg'],
+  ['Water Can', 'img/water-can.jpg'],
+  ['Wine Glass', 'img/wine-glass.jpg']
+];
+let productObjArr = [];
+
 class Product {
   productName;
   productPath;
@@ -24,39 +51,26 @@ class Product {
     img.src = this.productPath;
     voteDiv.appendChild(img);
   
-    let voteButton = document.createElement('button');
-    voteButton.innerHTML = 'Vote';
-    voteButton.addEventListener('click', () => {
-      this.clickCounter++;
-      if(voteCounter < votesAllowed) {
-        voteContainer.innerHTML = "";
-        displayProducts();
-        voteCounter++;
-      } else {
-        voteContainer.innerHTML = "";
-        viewResults();
-      }
-    });
-    voteDiv.appendChild(voteButton);
-  
     this.displayCounter++;
     return voteDiv;
   }
 }
 
-let voteCounter = 0;
-let votesAllowed = 5;
-let voteContainer = document.querySelector('#voteContainer');
-let productInfoArr = [
-  ['nameOne', 'https://place-hold.it/300x375/ddd" alt="placeHolder'],
-  ['nameTwo', 'https://place-hold.it/300x375/ddd" alt="placeHolder'],
-  ['nameThree', 'https://place-hold.it/300x375/ddd" alt="placeHolder'],
-  ['nameFour', 'https://place-hold.it/300x375/ddd" alt="placeHolder'],
-  ['nameFive', 'https://place-hold.it/300x375/ddd" alt="placeHolder']
-];
-let productObjArr = [];
+// Function will execute when user votes for a product, vote will be logged and three more products will be displayed
+function handleVote(event) {
+  console.log('click');
+  event.clickCounter++;
+  if(voteCounter < votesAllowed) {
+    voteContainer.innerHTML = "";
+    displayProducts();
+    voteCounter++;
+  } else {
+    voteContainer.innerHTML = "";
+    viewResults();
+  }
+}
 
-
+// This function loops through the products array and creates a new instance of each
 function createObjects() {
   for (let i = 0; i < productInfoArr.length; i++) {
     let newProd = new Product(productInfoArr[i][0], productInfoArr[i][1]);
@@ -65,6 +79,8 @@ function createObjects() {
 }
 createObjects();
 
+
+// This function will take the number of times each product is displayed and voted for and then display it as a list
 function viewResults() {
   let resultsDiv = document.createElement('ul');
   for (let productObj of productObjArr) {
@@ -79,6 +95,8 @@ function viewResults() {
   voteContainer.appendChild(resultsDiv);
 }
 
+
+// This function will display the three products that are to be voted for, it uses a method within the Product class to create a product div which is appended to the page
 function displayProducts() {
   let indexArray = [-1, -1, -1];
   let index = -1;
@@ -100,3 +118,4 @@ function displayProducts() {
   }
 }
 displayProducts();
+voteContainer.addEventListener('click', handleVote);
