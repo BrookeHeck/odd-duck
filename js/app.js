@@ -56,11 +56,19 @@ class Product {
     return voteDiv;
   }
 }
+// This function loops through the products array and creates a new instance of each
+function createObjects() {
+  for (let i = 0; i < productInfoArr.length; i++) {
+    let newProd = new Product(productInfoArr[i][0], productInfoArr[i][1]);
+    productObjArr.push(newProd);
+  }
+}
+createObjects();
+
 
 // Function will execute when user votes for a product, vote will be logged and three more products will be displayed
 function handleVote(event) {
   let clickedImg = event.target.alt;
-  console.log(clickedImg);
   for(let product of productObjArr) {
     if(clickedImg === product.productName) {
       product.clickCounter++;
@@ -77,36 +85,57 @@ function handleVote(event) {
     viewButton.innerHTML = 'View Results';
     let main = document.querySelector('main');
     main.appendChild(viewButton);
-    viewButton.addEventListener('click', viewResults)
+    viewButton.addEventListener('click', viewResultsChart);
   }
 }
 
-// This function loops through the products array and creates a new instance of each
-function createObjects() {
-  for (let i = 0; i < productInfoArr.length; i++) {
-    let newProd = new Product(productInfoArr[i][0], productInfoArr[i][1]);
-    productObjArr.push(newProd);
+function pickRandColor() {
+  let num = [];
+  for (let i = 0; i < 3; i++) {
+    num.push(Math.floor(Math.random() * 255));
   }
-}
-createObjects();
-
-
-// This function will take the number of times each product is displayed and voted for and then display it as a list
-function viewResults() {
-  voteContainer.innerHTML = "";
-  let resultsDiv = document.createElement('ul');
-  for (let productObj of productObjArr) {
-    let header = document.createElement('li');
-    header.innerHTML = productObj.productName;
-    resultsDiv.appendChild(header);
-
-    let voted = document.createElement('li');
-    voted.innerHTML = `${productObj.productName} was displayed ${productObj.displayCounter} time${productObj.displayCounter === 1 ? '' : 's'} and you voted for it ${productObj.clickCounter} time${productObj.clickCounter === 1 ? '' : 's'}.`;
-    resultsDiv.appendChild(voted);
-  }
-  voteContainer.appendChild(resultsDiv);
+  return `rgb(${num[0]}, ${num[1]}, ${num[2]})`;
 }
 
+
+function createChartDataArrs() {
+  let labelArr = [];
+  let votesArr = [];
+  let displayedArr = [];
+  let colorArr = [];
+  for (let product of productObjArr) {
+    labelArr.push(product.productName);
+    votesArr.push(product.clickCounter);
+    displayedArr.push(product.displayCounter);
+    colorArr.push(pickRandColor());
+  }
+  console.log([labelArr, votesArr, displayedArr, colorArr]);
+  return [labelArr, votesArr, displayedArr, colorArr];
+}
+
+function viewResultsChart() {
+  let dataArrs = createChartDataArrs();
+  let chartLabel = ['Number of Votes', 'Number of Times Displayed'];
+  let canvas = document.createElement('canvas');
+  for(let chart of chartLabel) {
+    new Chart(canvas, {
+      type: 'bar',
+      data: {
+        labels: dataArrs[0],
+        dataSets: [{
+          label: chart,
+          backgroundColor: dataArrs[3],
+          data: ((chart === 'Number of Votes') ? dataArrs[1] : dataArrs[2])
+        }]
+      }
+    });
+  }
+  let instruction = document.querySelector('#instruction');
+  instruction.remove();
+  voteContainer.innerHTML = '';
+  voteContainer.appendChild(canvas);
+}
+  
 
 // This function will display the three products that are to be voted for, it uses a method within the Product class to create a product div which is appended to the page
 let previous = [-1, -1, -1];
@@ -133,3 +162,22 @@ function displayProducts() {
 }
 displayProducts();
 voteContainer.addEventListener('click', handleVote);
+
+
+
+
+// This function will take the number of times each product is displayed and voted for and then display it as a list
+// function viewResults() {
+//   voteContainer.innerHTML = "";
+//   let resultsDiv = document.createElement('ul');
+//   for (let productObj of productObjArr) {
+//     let header = document.createElement('li');
+//     header.innerHTML = productObj.productName;
+//     resultsDiv.appendChild(header);
+
+//     let voted = document.createElement('li');
+//     voted.innerHTML = `${productObj.productName} was displayed ${productObj.displayCounter} time${productObj.displayCounter === 1 ? '' : 's'} and you voted for it ${productObj.clickCounter} time${productObj.clickCounter === 1 ? '' : 's'}.`;
+//     resultsDiv.appendChild(voted);
+//   }
+//   voteContainer.appendChild(resultsDiv);
+// }
