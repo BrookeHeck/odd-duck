@@ -105,26 +105,28 @@ function viewResultsChart() {
   voteContainer.innerHTML = '';
   
   let dataArrs = createChartDataArrs();
-  let chartType = ['Number of Votes', 'Number of Times Displayed'];
 
-  for (let chart of chartType) {
-    let canvas = document.createElement('canvas');
-    new Chart(canvas, {
-      type: 'bar',
-      data: {
-        labels: dataArrs[0],
-        datasets: [{
-          label: chart,
+  let canvas = document.createElement('canvas');
+  new Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels: dataArrs[0],
+      datasets: [{
+          label: 'Votes',
           backgroundColor: '#22223B',
-          data: ((chart === 'Number of Votes') ? dataArrs[1] : dataArrs[2])
-        }]
-      },
-      options: {}
-    });
-    voteContainer.style.flexDirection = 'column';
-    voteContainer.appendChild(canvas);
-  }
-  
+          data: dataArrs[1]
+        },
+        {
+          label: 'Displays',
+          backgroundColor: '#4a4e69',
+          data: dataArrs[2]
+        }
+      ]
+    },
+    options: {}
+  });
+  voteContainer.style.flexDirection = 'column';
+  voteContainer.appendChild(canvas);  
 }
   
 // This function will display the three products that are to be voted for, it uses a method within the Product class to create a product div which is appended to the page
