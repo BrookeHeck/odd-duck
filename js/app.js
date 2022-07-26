@@ -78,7 +78,6 @@ function handleVote(event) {
     voteContainer.innerHTML = "";
     displayProducts();
     voteCounter++;
-    console.log()
   } else {
     voteContainer.removeEventListener('click', handleVote);
     let viewButton = document.createElement('button');
@@ -128,7 +127,6 @@ function viewResultsChart() {
   
 }
   
-
 // This function will display the three products that are to be voted for, it uses a method within the Product class to create a product div which is appended to the page
 let previous = [-1, -1, -1];
 function displayProducts() {
@@ -155,21 +153,3 @@ function displayProducts() {
 displayProducts();
 voteContainer.addEventListener('click', handleVote);
 
-
-
-
-// This function will take the number of times each product is displayed and voted for and then display it as a list
-// function viewResults() {
-//   voteContainer.innerHTML = "";
-//   let resultsDiv = document.createElement('ul');
-//   for (let productObj of productObjArr) {
-//     let header = document.createElement('li');
-//     header.innerHTML = productObj.productName;
-//     resultsDiv.appendChild(header);
-
-//     let voted = document.createElement('li');
-//     voted.innerHTML = `${productObj.productName} was displayed ${productObj.displayCounter} time${productObj.displayCounter === 1 ? '' : 's'} and you voted for it ${productObj.clickCounter} time${productObj.clickCounter === 1 ? '' : 's'}.`;
-//     resultsDiv.appendChild(voted);
-//   }
-//   voteContainer.appendChild(resultsDiv);
-// }
