@@ -115,21 +115,20 @@ function createChartDataArrs() {
 
 function viewResultsChart() {
   let dataArrs = createChartDataArrs();
-  let chartLabel = ['Number of Votes', 'Number of Times Displayed'];
   let canvas = document.createElement('canvas');
-  for(let chart of chartLabel) {
-    new Chart(canvas, {
-      type: 'bar',
-      data: {
-        labels: dataArrs[0],
-        dataSets: [{
-          label: chart,
-          backgroundColor: dataArrs[3],
-          data: ((chart === 'Number of Votes') ? dataArrs[1] : dataArrs[2])
-        }]
-      }
-    });
-  }
+  new Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels: dataArrs[0],
+      datasets: [{
+        label: 'Number of Votes',
+        backgroundColor: dataArrs[3],
+        data: (dataArrs[1])
+      }]
+    },
+    options: {}
+  });
+
   let instruction = document.querySelector('#instruction');
   instruction.remove();
   voteContainer.innerHTML = '';
