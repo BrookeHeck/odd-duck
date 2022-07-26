@@ -109,6 +109,7 @@ function viewResults() {
 
 
 // This function will display the three products that are to be voted for, it uses a method within the Product class to create a product div which is appended to the page
+let previous = [-1, -1, -1];
 function displayProducts() {
   let indexArray = [-1, -1, -1];
   let index = -1;
@@ -116,8 +117,8 @@ function displayProducts() {
     let alreadyUsed = true;
     while (alreadyUsed) {
       index = Math.floor(Math.random() * productObjArr.length);
-      for(let j of indexArray) {
-        if (j === index) {
+      for(let j = 0; j < 3; j++) {
+        if (index === indexArray[j] || index === previous[j]) {
           alreadyUsed = true;
           break;
         } else {
@@ -128,6 +129,7 @@ function displayProducts() {
     indexArray[i] = index;
     voteContainer.appendChild(productObjArr[index].createProductDisplay());
   }
+  previous = indexArray;
 }
 displayProducts();
 voteContainer.addEventListener('click', handleVote);
