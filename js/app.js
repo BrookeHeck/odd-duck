@@ -56,31 +56,6 @@ class Product {
     return voteDiv;
   }
 }
-
-// Function will execute when user votes for a product, vote will be logged and three more products will be displayed
-function handleVote(event) {
-  let clickedImg = event.target.alt;
-  console.log(clickedImg);
-  for(let product of productObjArr) {
-    if(clickedImg === product.productName) {
-      product.clickCounter++;
-    }
-  }
-  if(voteCounter < votesAllowed) {
-    voteContainer.innerHTML = "";
-    displayProducts();
-    voteCounter++;
-    console.log()
-  } else {
-    voteContainer.removeEventListener('click', handleVote);
-    let viewButton = document.createElement('button');
-    viewButton.innerHTML = 'View Results';
-    let main = document.querySelector('main');
-    main.appendChild(viewButton);
-    viewButton.addEventListener('click', viewResults)
-  }
-}
-
 // This function loops through the products array and creates a new instance of each
 function createObjects() {
   for (let i = 0; i < productInfoArr.length; i++) {
@@ -91,24 +66,69 @@ function createObjects() {
 createObjects();
 
 
-// This function will take the number of times each product is displayed and voted for and then display it as a list
-function viewResults() {
-  voteContainer.innerHTML = "";
-  let resultsDiv = document.createElement('ul');
-  for (let productObj of productObjArr) {
-    let header = document.createElement('li');
-    header.innerHTML = productObj.productName;
-    resultsDiv.appendChild(header);
-
-    let voted = document.createElement('li');
-    voted.innerHTML = `${productObj.productName} was displayed ${productObj.displayCounter} time${productObj.displayCounter === 1 ? '' : 's'} and you voted for it ${productObj.clickCounter} time${productObj.clickCounter === 1 ? '' : 's'}.`;
-    resultsDiv.appendChild(voted);
+// Function will execute when user votes for a product, vote will be logged and three more products will be displayed
+function handleVote(event) {
+  let clickedImg = event.target.alt;
+  for(let product of productObjArr) {
+    if(clickedImg === product.productName) {
+      product.clickCounter++;
+    }
   }
-  voteContainer.appendChild(resultsDiv);
+  if(voteCounter < votesAllowed) {
+    voteContainer.innerHTML = "";
+    displayProducts();
+    voteCounter++;
+  } else {
+    voteContainer.removeEventListener('click', handleVote);
+    let viewButton = document.createElement('button');
+    viewButton.innerHTML = 'View Results';
+    let main = document.querySelector('main');
+    main.appendChild(viewButton);
+    viewButton.addEventListener('click', viewResultsChart);
+  }
 }
 
 
+function createChartDataArrs() {
+  let labelArr = [];
+  let votesArr = [];
+  let displayedArr = [];
+  for (let product of productObjArr) {
+    labelArr.push(product.productName);
+    votesArr.push(product.clickCounter);
+    displayedArr.push(product.displayCounter);
+  }
+  return [labelArr, votesArr, displayedArr];
+}
+
+function viewResultsChart() {
+  voteContainer.innerHTML = '';
+  
+  let dataArrs = createChartDataArrs();
+  let chartType = ['Number of Votes', 'Number of Times Displayed'];
+
+  for (let chart of chartType) {
+    let canvas = document.createElement('canvas');
+    new Chart(canvas, {
+      type: 'bar',
+      data: {
+        labels: dataArrs[0],
+        datasets: [{
+          label: chart,
+          backgroundColor: '#22223B',
+          data: ((chart === 'Number of Votes') ? dataArrs[1] : dataArrs[2])
+        }]
+      },
+      options: {}
+    });
+    voteContainer.style.flexDirection = 'column';
+    voteContainer.appendChild(canvas);
+  }
+  
+}
+  
 // This function will display the three products that are to be voted for, it uses a method within the Product class to create a product div which is appended to the page
+let previous = [-1, -1, -1];
 function displayProducts() {
   let indexArray = [-1, -1, -1];
   let index = -1;
@@ -116,8 +136,8 @@ function displayProducts() {
     let alreadyUsed = true;
     while (alreadyUsed) {
       index = Math.floor(Math.random() * productObjArr.length);
-      for(let j of indexArray) {
-        if (j === index) {
+      for(let j = 0; j < 3; j++) {
+        if (index === indexArray[j] || index === previous[j]) {
           alreadyUsed = true;
           break;
         } else {
@@ -128,6 +148,8 @@ function displayProducts() {
     indexArray[i] = index;
     voteContainer.appendChild(productObjArr[index].createProductDisplay());
   }
+  previous = indexArray;
 }
 displayProducts();
 voteContainer.addEventListener('click', handleVote);
+
