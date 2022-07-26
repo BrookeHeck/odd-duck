@@ -89,50 +89,43 @@ function handleVote(event) {
   }
 }
 
-function pickRandColor() {
-  let num = [];
-  for (let i = 0; i < 3; i++) {
-    num.push(Math.floor(Math.random() * 255));
-  }
-  return `rgb(${num[0]}, ${num[1]}, ${num[2]})`;
-}
-
 
 function createChartDataArrs() {
   let labelArr = [];
   let votesArr = [];
   let displayedArr = [];
-  let colorArr = [];
   for (let product of productObjArr) {
     labelArr.push(product.productName);
     votesArr.push(product.clickCounter);
     displayedArr.push(product.displayCounter);
-    colorArr.push(pickRandColor());
   }
-  console.log([labelArr, votesArr, displayedArr, colorArr]);
-  return [labelArr, votesArr, displayedArr, colorArr];
+  return [labelArr, votesArr, displayedArr];
 }
 
 function viewResultsChart() {
-  let dataArrs = createChartDataArrs();
-  let canvas = document.createElement('canvas');
-  new Chart(canvas, {
-    type: 'bar',
-    data: {
-      labels: dataArrs[0],
-      datasets: [{
-        label: 'Number of Votes',
-        backgroundColor: dataArrs[3],
-        data: (dataArrs[1])
-      }]
-    },
-    options: {}
-  });
-
-  let instruction = document.querySelector('#instruction');
-  instruction.remove();
   voteContainer.innerHTML = '';
-  voteContainer.appendChild(canvas);
+  
+  let dataArrs = createChartDataArrs();
+  let chartType = ['Number of Votes', 'Number of Times Displayed'];
+
+  for (let chart of chartType) {
+    let canvas = document.createElement('canvas');
+    new Chart(canvas, {
+      type: 'bar',
+      data: {
+        labels: dataArrs[0],
+        datasets: [{
+          label: chart,
+          backgroundColor: '#22223B',
+          data: ((chart === 'Number of Votes') ? dataArrs[1] : dataArrs[2])
+        }]
+      },
+      options: {}
+    });
+    voteContainer.style.flexDirection = 'column';
+    voteContainer.appendChild(canvas);
+  }
+  
 }
   
 
