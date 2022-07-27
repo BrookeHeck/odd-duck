@@ -27,17 +27,30 @@ let productInfoArr = [
 ];
 let productObjArr = [];
 
+
 class Product {
   productName;
   productPath;
   displayCounter;
   clickCounter;
 
+
   constructor(productName, productPath) {
     this.productName = productName; 
     this.productPath = productPath;
-    this.displayCounter = 0;
-    this.clickCounter = 0;
+    if(localStorage.getItem('localArr') === null) {
+      this.displayCounter = 0;
+      this.clickCounter = 0;
+    } else {
+      let localArr = JSON.parse(localStorage.getItem('localArr'));
+      for(let prod of localArr) {
+        if (prod.productName === this.productName) {
+          this.displayCounter = prod.displayCounter;
+          this.clickCounter = prod.clickCounter;
+        }
+      }
+    }
+    
   }
 
   createProductDisplay() {
@@ -51,7 +64,7 @@ class Product {
     img.src = this.productPath;
     img.alt = this.productName;
     voteDiv.appendChild(img);
-  
+    
     this.displayCounter++;
     return voteDiv;
   }
@@ -126,7 +139,8 @@ function viewResultsChart() {
     options: {}
   });
   voteContainer.style.flexDirection = 'column';
-  voteContainer.appendChild(canvas);  
+  voteContainer.appendChild(canvas); 
+  storeResults();
 }
   
 // This function will display the three products that are to be voted for, it uses a method within the Product class to create a product div which is appended to the page
@@ -149,9 +163,14 @@ function displayProducts() {
     }
     indexArray[i] = index;
     voteContainer.appendChild(productObjArr[index].createProductDisplay());
+    productObjArr[index].displayCounter++;
   }
   previous = indexArray;
 }
 displayProducts();
 voteContainer.addEventListener('click', handleVote);
 
+function storeResults() {
+  localStorage.setItem('localArr', JSON.stringify(productObjArr));
+  console.log(localStorage.getItem('localArr'));
+}
