@@ -69,6 +69,7 @@ class Product {
     return voteDiv;
   }
 }
+
 // This function loops through the products array and creates a new instance of each
 function createObjects() {
   for (let i = 0; i < productInfoArr.length; i++) {
@@ -102,7 +103,7 @@ function handleVote(event) {
   }
 }
 
-
+// function will create data arrays that will be passed to Chart constructor to instantiate that object
 function createChartDataArrs() {
   let labelArr = [];
   let votesArr = [];
@@ -115,6 +116,8 @@ function createChartDataArrs() {
   return [labelArr, votesArr, displayedArr];
 }
 
+// create a chart from number of displays and number of counts data
+// also gives the user the option to vote again or reset the number data
 function viewResultsChart() {
   voteContainer.innerHTML = '';
   
@@ -140,12 +143,14 @@ function viewResultsChart() {
     options: {}
   });
   voteContainer.style.flexDirection = 'column';
-  voteContainer.appendChild(canvas); 
+  voteContainer.appendChild(canvas);
+  // product object array is stored in local storage so that number of votes and displayed can be used in the next round of voting
   localStorage.setItem('localArr', JSON.stringify(productObjArr));
   document.querySelector('#viewButton').remove();
   voteAgain();
 }
 
+// reloads the page with either the numbers stored in local storage or removes the local storage and reloads the page depending on what the user chooses
 function voteAgain () {
   let voteAgain = document.createElement('button');
   voteAgain.innerHTML = 'Vote Again';
