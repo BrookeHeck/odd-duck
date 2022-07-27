@@ -27,17 +27,30 @@ let productInfoArr = [
 ];
 let productObjArr = [];
 
+
 class Product {
   productName;
   productPath;
   displayCounter;
   clickCounter;
 
+
   constructor(productName, productPath) {
     this.productName = productName; 
     this.productPath = productPath;
-    this.displayCounter = 0;
-    this.clickCounter = 0;
+    if(localStorage.getItem('localArr') === null) {
+      this.displayCounter = 0;
+      this.clickCounter = 0;
+    } else {
+      let localArr = JSON.parse(localStorage.getItem('localArr'));
+      for(let prod of localArr) {
+        if (prod.productName === this.productName) {
+          this.displayCounter = prod.displayCounter;
+          this.clickCounter = prod.clickCounter;
+        }
+      }
+    }
+    
   }
 
   createProductDisplay() {
@@ -51,11 +64,12 @@ class Product {
     img.src = this.productPath;
     img.alt = this.productName;
     voteDiv.appendChild(img);
-  
+    
     this.displayCounter++;
     return voteDiv;
   }
 }
+
 // This function loops through the products array and creates a new instance of each
 function createObjects() {
   for (let i = 0; i < productInfoArr.length; i++) {
@@ -66,7 +80,8 @@ function createObjects() {
 createObjects();
 
 
-// Function will execute when user votes for a product, vote will be logged and three more products will be displayed
+// Function will execute when user votes for a product
+// vote will be logged and three more products will be displayed
 function handleVote(event) {
   let clickedImg = event.target.alt;
   for(let product of productObjArr) {
@@ -81,6 +96,7 @@ function handleVote(event) {
   } else {
     voteContainer.removeEventListener('click', handleVote);
     let viewButton = document.createElement('button');
+    viewButton.id = 'viewButton';
     viewButton.innerHTML = 'View Results';
     let main = document.querySelector('main');
     main.appendChild(viewButton);
@@ -88,7 +104,7 @@ function handleVote(event) {
   }
 }
 
-
+// function will create data arrays that will be passed to Chart constructor to instantiate that object
 function createChartDataArrs() {
   let labelArr = [];
   let votesArr = [];
@@ -101,6 +117,8 @@ function createChartDataArrs() {
   return [labelArr, votesArr, displayedArr];
 }
 
+// create a chart from number of displays and number of counts data
+// also gives the user the option to vote again or reset the number data
 function viewResultsChart() {
   voteContainer.innerHTML = '';
   
@@ -126,10 +144,33 @@ function viewResultsChart() {
     options: {}
   });
   voteContainer.style.flexDirection = 'column';
-  voteContainer.appendChild(canvas);  
+  voteContainer.appendChild(canvas);
+  // product object array is stored in local storage so that number of votes and displayed can be used in the next round of voting
+  localStorage.setItem('localArr', JSON.stringify(productObjArr));
+  document.querySelector('#viewButton').remove();
+  voteAgain();
+}
+
+// reloads the page with either the numbers stored in local storage or removes the local storage and reloads the page depending on what the user chooses
+function voteAgain () {
+  let voteAgain = document.createElement('button');
+  voteAgain.innerHTML = 'Vote Again';
+  voteContainer.appendChild(voteAgain);
+  voteAgain.addEventListener('click', () => {
+    location.reload();
+  });
+
+  let resetTotals = document.createElement('button');
+  resetTotals.innerHTML = 'Reset Vote Totals';
+  voteContainer.appendChild(resetTotals);
+  resetTotals.addEventListener('click', () => {
+    localStorage.removeItem('localArr');
+    location.reload();
+  })
 }
   
-// This function will display the three products that are to be voted for, it uses a method within the Product class to create a product div which is appended to the page
+// This function will display the three products that are to be voted for
+// it uses a method within the Product class to create a product div which is appended to the page
 let previous = [-1, -1, -1];
 function displayProducts() {
   let indexArray = [-1, -1, -1];
@@ -149,9 +190,9 @@ function displayProducts() {
     }
     indexArray[i] = index;
     voteContainer.appendChild(productObjArr[index].createProductDisplay());
+    productObjArr[index].displayCounter++;
   }
   previous = indexArray;
 }
 displayProducts();
 voteContainer.addEventListener('click', handleVote);
-
