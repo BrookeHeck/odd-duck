@@ -80,7 +80,8 @@ function createObjects() {
 createObjects();
 
 
-// Function will execute when user votes for a product, vote will be logged and three more products will be displayed
+// Function will execute when user votes for a product
+// vote will be logged and three more products will be displayed
 function handleVote(event) {
   let clickedImg = event.target.alt;
   for(let product of productObjArr) {
@@ -168,7 +169,8 @@ function voteAgain () {
   })
 }
   
-// This function will display the three products that are to be voted for, it uses a method within the Product class to create a product div which is appended to the page
+// This function will display the three products that are to be voted for
+// it uses a method within the Product class to create a product div which is appended to the page
 let previous = [-1, -1, -1];
 function displayProducts() {
   let indexArray = [-1, -1, -1];
