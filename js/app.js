@@ -94,6 +94,7 @@ function handleVote(event) {
   } else {
     voteContainer.removeEventListener('click', handleVote);
     let viewButton = document.createElement('button');
+    viewButton.id = 'viewButton';
     viewButton.innerHTML = 'View Results';
     let main = document.querySelector('main');
     main.appendChild(viewButton);
@@ -140,7 +141,26 @@ function viewResultsChart() {
   });
   voteContainer.style.flexDirection = 'column';
   voteContainer.appendChild(canvas); 
-  storeResults();
+  localStorage.setItem('localArr', JSON.stringify(productObjArr));
+  document.querySelector('#viewButton').remove();
+  voteAgain();
+}
+
+function voteAgain () {
+  let voteAgain = document.createElement('button');
+  voteAgain.innerHTML = 'Vote Again';
+  voteContainer.appendChild(voteAgain);
+  voteAgain.addEventListener('click', () => {
+    location.reload();
+  });
+
+  let resetTotals = document.createElement('button');
+  resetTotals.innerHTML = 'Reset Vote Totals';
+  voteContainer.appendChild(resetTotals);
+  resetTotals.addEventListener('click', () => {
+    localStorage.removeItem('localArr');
+    location.reload();
+  })
 }
   
 // This function will display the three products that are to be voted for, it uses a method within the Product class to create a product div which is appended to the page
@@ -169,8 +189,3 @@ function displayProducts() {
 }
 displayProducts();
 voteContainer.addEventListener('click', handleVote);
-
-function storeResults() {
-  localStorage.setItem('localArr', JSON.stringify(productObjArr));
-  console.log(localStorage.getItem('localArr'));
-}
