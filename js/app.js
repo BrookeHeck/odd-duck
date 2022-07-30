@@ -33,11 +33,16 @@ class Product {
   productPath;
   displayCounter;
   clickCounter;
+  
+  oneRoundClickCount;
+  oneRoundDisplayCount;
 
 
   constructor(productName, productPath) {
     this.productName = productName; 
     this.productPath = productPath;
+    this.oneRoundClickCount = 0;
+    this.oneRoundDisplayCount = 0;
     if(localStorage.getItem('localArr') === null) {
       this.displayCounter = 0;
       this.clickCounter = 0;
@@ -66,6 +71,7 @@ class Product {
     voteDiv.appendChild(img);
     
     this.displayCounter++;
+    this.oneRoundDisplayCount++;
     return voteDiv;
   }
 }
@@ -87,6 +93,7 @@ function handleVote(event) {
   for(let product of productObjArr) {
     if(clickedImg === product.productName) {
       product.clickCounter++;
+      product.oneRoundClickCount++;
     }
   }
   if(voteCounter < votesAllowed) {
@@ -107,14 +114,18 @@ function handleVote(event) {
 // function will create data arrays that will be passed to Chart constructor to instantiate that object
 function createChartDataArrs() {
   let labelArr = [];
-  let votesArr = [];
-  let displayedArr = [];
+  let totalVotesArr = [];
+  let singleVoteArr = [];
+  let totalDisplayArr = [];
+  let singleDisplayArr = [];
   for (let product of productObjArr) {
     labelArr.push(product.productName);
-    votesArr.push(product.clickCounter);
-    displayedArr.push(product.displayCounter);
+    totalVotesArr.push(product.clickCounter);
+    totalDisplayArr.push(product.displayCounter);
+    singleVoteArr.push(product.oneRoundClickCount);
+    singleDisplayArr.push(product.oneRoundDisplayCount);
   }
-  return [labelArr, votesArr, displayedArr];
+  return [labelArr, 'Total Vote Data', totalVotesArr, totalDisplayArr, 'Single Voting Round Data', singleVoteArr, singleDisplayArr];
 }
 
 // create a chart from number of displays and number of counts data
@@ -123,28 +134,35 @@ function viewResultsChart() {
   voteContainer.innerHTML = '';
   
   let dataArrs = createChartDataArrs();
+  for (let i = 1; i < dataArrs.length; i++) {
+    let tableHeader = document.createElement('h2');
+    tableHeader.innerHTML = dataArrs[i++];
+    voteContainer.appendChild(tableHeader);
 
-  let canvas = document.createElement('canvas');
-  new Chart(canvas, {
-    type: 'bar',
-    data: {
-      labels: dataArrs[0],
-      datasets: [{
-          label: 'Votes',
-          backgroundColor: '#22223B',
-          data: dataArrs[1]
-        },
-        {
-          label: 'Displays',
-          backgroundColor: '#4a4e69',
-          data: dataArrs[2]
-        }
-      ]
-    },
-    options: {}
-  });
-  voteContainer.style.flexDirection = 'column';
-  voteContainer.appendChild(canvas);
+    let canvas = document.createElement('canvas');
+    new Chart(canvas, {
+      type: 'bar',
+      data: {
+        labels: dataArrs[0],
+        datasets: [{
+            label: 'Votes',
+            backgroundColor: '#22223B',
+            data: dataArrs[i++]
+          },
+          {
+            label: 'Displays',
+            backgroundColor: '#4a4e69',
+            data: dataArrs[i]
+          }
+        ]
+      },
+      options: {}
+    });
+    voteContainer.style.flexDirection = 'column';
+    voteContainer.appendChild(canvas);
+  }
+
+ 
   // product object array is stored in local storage so that number of votes and displayed can be used in the next round of voting
   localStorage.setItem('localArr', JSON.stringify(productObjArr));
   document.querySelector('#viewButton').remove();
@@ -190,7 +208,6 @@ function displayProducts() {
     }
     indexArray[i] = index;
     voteContainer.appendChild(productObjArr[index].createProductDisplay());
-    productObjArr[index].displayCounter++;
   }
   previous = indexArray;
 }
